@@ -6,12 +6,6 @@
   options {
     buildDiscarder(logRotator(numToKeepStr: '10'))
   }
-  triggers {
-    // This tells Jenkins to poll for changes in git instead of
-    // waiting for webhooks.
-    pollSCM('* * * * *')
-  }
-
   stages {
     stage('Docker login') {
       steps {
@@ -51,26 +45,5 @@
         '''
       }
     }
-    /*
-    stage('Docker Push') {
-      steps {
-        sh '''
-        echo "Branch: $GIT_BRANCH"
-        docker images | head
-
-        for variant in '' _nginx _php; do
-            docker tag denpal$variant amazeeiodevelopment/denpal$variant:$GIT_BRANCH
-            docker push amazeeiodevelopment/denpal$variant:$GIT_BRANCH
-
-            if [ $GIT_BRANCH = "develop" ]; then
-              docker tag denpal$variant amazeeiodevelopment/denpal$variant:latest
-              docker push amazeeiodevelopment/denpal$variant:latest
-            fi
-
-        done
-        '''
-      }
-    }
-    */
   }
 }
