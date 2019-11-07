@@ -18,6 +18,8 @@ x-environment:
     #LAGOON_ENVIRONMENT_TYPE: production
     # Uncomment to enable xdebug and then restart via `docker-compose up -d`
     #XDEBUG_ENABLE: "true"
+    # By default the queue system will run jobs synchronously - you can set the driver here
+    #QUEUE_CONNECTION: "database"
 
 services:
 
