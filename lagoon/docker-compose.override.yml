@@ -1,0 +1,19 @@
+version: '2.3'
+
+x-volumes:
+  &default-volumes
+    volumes:
+      - ./:/app:delegated
+
+services:
+  cli:
+    << : *default-volumes
+  artisan-worker:
+    << : *default-volumes
+  nginx:
+    << : *default-volumes
+  php:
+    << : *default-volumes
+
+
+
