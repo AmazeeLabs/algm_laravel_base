@@ -4,10 +4,6 @@ x-lagoon-project:
   &lagoon-project laragoon-project
   &cli-image $DOCKER_REPO/laravel:$BUILDTAG
 
-x-volumes:
-  &default-volumes
-    volumes:
-      - ./:/app:delegated
 
 x-environment:
   &default-environment
@@ -19,7 +15,7 @@ x-environment:
     # Uncomment to enable xdebug and then restart via `docker-compose up -d`
     #XDEBUG_ENABLE: "true"
     # By default the queue system will run jobs synchronously - you can set the driver here
-    #QUEUE_CONNECTION: "database"
+    QUEUE_CONNECTION: "redis"
 
 services:
 
@@ -30,7 +26,6 @@ services:
     image: $DOCKER_REPO/laravel:$BUILDTAG # this image will be reused as `CLI_IMAGE` in subsequent Docker builds
     labels:
       lagoon.type: cli
-    << : *default-volumes # loads the defined volumes from the top
     #volumes_from: # mount the ssh-agent from the pygmy or cachalot ssh-agent
       #- container:amazeeio-ssh-agent
     environment:
@@ -45,7 +40,6 @@ services:
     labels:
       # Lagoon Labels
       lagoon.type: cli
-    << : *default-volumes # loads the defined volumes from the top
     #volumes_from: # mount the ssh-agent from the pygmy or cachalot ssh-agent
     #  - container:amazeeio-ssh-agent
     environment:
@@ -62,7 +56,6 @@ services:
     image: $DOCKER_REPO/laravel_ngnix:$BUILDTAG
     labels:
       lagoon.type: nginx-php
-    << : *default-volumes # loads the defined volumes from the top
     depends_on:
       - cli 
     environment:
@@ -81,7 +74,6 @@ services:
     labels:
       lagoon.type: nginx-php
       lagoon.name: nginx # we want this service be part of the nginx pod in Lagoon
-    << : *default-volumes # loads the defined volumes from the top
     depends_on:
       - cli 
     environment:
@@ -93,6 +85,13 @@ services:
       lagoon.type: mariadb
     ports:
       - "3306" # exposes the port 3306 with a random local port, find it with `docker-compose port mariadb 3306`
+    environment:
+      << : *default-environment
+
+  redis:
+    image: amazeeio/redis
+    labels:
+      lagoon.type: redis-persistent #we make this persistent because we're storing jobs, not simply caching things
     environment:
       << : *default-environment
 
