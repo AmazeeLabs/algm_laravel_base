@@ -1,0 +1,14 @@
+#!/bin/sh
+cd /app
+pwd
+echo "{}" > composer.lock #we don't delete it because it's mapped
+COMPOSER=composer.true.json composer install 
+if [[ $? -eq 0 ]]; then
+	cd /app/build
+	pwd
+      	composer install
+      	php -d memory_limit=-1 ./vendor/bin/semilock composer_fixed:generate /app/composer.true.json /app/composer.true.lock > ../composer.json && rm ../composer.true.lock
+  else
+	echo "Unable to install composer.true.json - exiting"
+	exit 1
+fi
