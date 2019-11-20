@@ -14,6 +14,9 @@ services:
     << : *default-volumes
   php:
     << : *default-volumes
+  redis:
+    ports:
+      - "6379" 
 
 
 
