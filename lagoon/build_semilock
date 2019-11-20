@@ -4,7 +4,7 @@ pwd
 echo "{}" > composer.lock #we don't delete it because it's mapped
 COMPOSER=composer.true.json composer install 
 if [[ $? -eq 0 ]]; then
-	cd /app/build
+	cd /app/lagoon
 	pwd
       	composer install
       	php -d memory_limit=-1 ./vendor/bin/semilock composer_fixed:generate /app/composer.true.json /app/composer.true.lock > ../composer.json && rm ../composer.true.lock
